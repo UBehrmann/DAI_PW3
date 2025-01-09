@@ -1,4 +1,4 @@
-package com.example.models;
+package ch.heigvd.dai.models;
 
 import java.util.Date;
 
