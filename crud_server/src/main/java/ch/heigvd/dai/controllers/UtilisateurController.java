@@ -4,6 +4,8 @@ import io.javalin.Javalin;
 import ch.heigvd.dai.models.Utilisateur;
 import ch.heigvd.dai.services.UtilisateurService;
 
+import java.util.Map;
+
 public class UtilisateurController {
     private static final UtilisateurService utilisateurService = new UtilisateurService();
 
@@ -21,11 +23,15 @@ public class UtilisateurController {
 
         // Ajouter un nouvel utilisateur
         app.post("/utilisateurs", ctx -> {
-            Utilisateur utilisateur = ctx.bodyAsClass(Utilisateur.class);
+            Map<String, String> body = ctx.bodyAsClass(Map.class); // Parse JSON as Map
+            Utilisateur utilisateur = new Utilisateur(
+                    body.get("nom"),
+                    body.get("prenom"),
+                    body.get("nomUtilisateur"),
+                    body.get("motDePasse")
+            );
             utilisateurService.ajouterUtilisateur(utilisateur);
             ctx.status(201).result("Utilisateur ajouté");
         });
-
-        // Autres routes...
     }
 }
