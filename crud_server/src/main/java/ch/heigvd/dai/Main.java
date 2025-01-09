@@ -9,5 +9,8 @@ public class Main {
 
         // Enregistrement des routes utilisateur
         UtilisateurController.registerRoutes(app);
+
+        // Ajout d'un endpoint de santé pour vérifier si le serveur fonctionne
+        app.get("/health", ctx -> ctx.result("Server is running and healthy!"));
     }
 }

@@ -9,7 +9,7 @@ public class UtilisateurController {
 
     public static void registerRoutes(Javalin app) {
         // Récupérer un utilisateur par son ID
-        app.get("/utilisateurs/:id", ctx -> {
+        app.get("/utilisateurs/{id}", ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
             Utilisateur utilisateur = utilisateurService.getUtilisateurById(id);
             if (utilisateur != null) {
