@@ -1,0 +1,50 @@
+package com.example.models;
+
+import java.util.Date;
+
+public class GroupeUtilisateurs {
+    private int id; // Identifiant unique
+    private String nom;
+    private Date dateCreation;
+
+    // Constructeur
+    public GroupeUtilisateurs(int id, String nom, Date dateCreation) {
+        this.id = id;
+        this.nom = nom;
+        this.dateCreation = dateCreation;
+    }
+
+    // Getters et Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupeUtilisateurs{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", dateCreation=" + dateCreation +
+                '}';
+    }
+}
