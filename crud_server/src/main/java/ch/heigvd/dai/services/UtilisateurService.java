@@ -6,13 +6,23 @@ import ch.heigvd.dai.repositories.UtilisateurRepository;
 public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository = new UtilisateurRepository();
 
-    public Utilisateur getUtilisateurById(int id) {
-        return utilisateurRepository.getUtilisateurById(id);
+    // Récupérer un utilisateur par son nomUtilisateur
+    public Utilisateur getUtilisateurByNomUtilisateur(String nomUtilisateur) {
+        return utilisateurRepository.getUtilisateurByNomUtilisateur(nomUtilisateur);
     }
 
+    // Ajouter un nouvel utilisateur
     public void ajouterUtilisateur(Utilisateur utilisateur) {
         utilisateurRepository.ajouterUtilisateur(utilisateur);
     }
 
-    // Autres méthodes...
+    // Mettre à jour un utilisateur existant
+    public void mettreAJourUtilisateur(Utilisateur utilisateur) {
+        utilisateurRepository.mettreAJourUtilisateur(utilisateur);
+    }
+
+    // Supprimer un utilisateur par son nomUtilisateur
+    public void supprimerUtilisateur(String nomUtilisateur) {
+        utilisateurRepository.supprimerUtilisateur(nomUtilisateur);
+    }
 }

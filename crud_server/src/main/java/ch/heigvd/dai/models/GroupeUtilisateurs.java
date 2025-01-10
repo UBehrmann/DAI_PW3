@@ -1,28 +1,19 @@
 package ch.heigvd.dai.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class GroupeUtilisateurs {
-    private int id; // Identifiant unique
-    private String nom;
-    private Date dateCreation;
+    private String nom; // Clé primaire
+    private LocalDate dateCreation;
+    private String administrateur; // Clé étrangère vers Utilisateur
 
-    // Constructeur
-    public GroupeUtilisateurs(int id, String nom, Date dateCreation) {
-        this.id = id;
+    public GroupeUtilisateurs(String nom, LocalDate dateCreation, String administrateur) {
         this.nom = nom;
         this.dateCreation = dateCreation;
+        this.administrateur = administrateur;
     }
 
     // Getters et Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getNom() {
         return nom;
     }
@@ -31,20 +22,19 @@ public class GroupeUtilisateurs {
         this.nom = nom;
     }
 
-    public Date getDateCreation() {
+    public LocalDate getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(Date dateCreation) {
+    public void setDateCreation(LocalDate dateCreation) {
         this.dateCreation = dateCreation;
     }
 
-    @Override
-    public String toString() {
-        return "GroupeUtilisateurs{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", dateCreation=" + dateCreation +
-                '}';
+    public String getAdministrateur() {
+        return administrateur;
+    }
+
+    public void setAdministrateur(String administrateur) {
+        this.administrateur = administrateur;
     }
 }
