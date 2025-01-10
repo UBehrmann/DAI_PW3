@@ -10,7 +10,7 @@ public class DatabaseConfig {
 
     static {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/mydb");
+        config.setJdbcUrl("jdbc:postgresql://postgres-db:5432/mydb");
         config.setUsername("user");
         config.setPassword("password");
         config.setDriverClassName("org.postgresql.Driver");
