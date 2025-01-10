@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: timescale/timescaledb:latest-pg14
     container_name: postgres-db
     environment:
       POSTGRES_USER: user

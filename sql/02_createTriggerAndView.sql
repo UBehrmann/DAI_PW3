@@ -201,7 +201,7 @@ RETURNS TABLE (
     appareil TEXT,
     serie TEXT,
     valeurs JSONB,
-    timestamp TIMESTAMP
+    "timestamp" TIMESTAMP
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -234,7 +234,7 @@ RETURNS TABLE (
     serie TEXT,
     type TEXT,
     niveau TEXT,
-    timestamp TIMESTAMP
+    "timestamp" TIMESTAMP
 ) AS $$
 BEGIN
     RETURN QUERY

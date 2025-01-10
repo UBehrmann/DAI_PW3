@@ -98,3 +98,8 @@ docker pull ghcr.io/ubehrmann/dai_pw3:latest
 docker run -p 7000:7000 ghcr.io/ubehrmann/dai_pw3:latest
 ```
 
+## How to connect to the db with docker
+
+```bash
+docker exec -it postgres-db psql -U user -d mydb
+```
