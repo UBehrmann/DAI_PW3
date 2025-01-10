@@ -1,4 +1,32 @@
+version: "3.9"
+
+networks:
+  web:
+
 services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - "--api=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--log.level=DEBUG"
+    ports:
+      - "80:80"
+      - "8080:8080" 
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`127.0.0.1`) && PathPrefix(`/traefik`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+    networks:
+      - web
+    restart: always
+
   postgres:
     image: timescale/timescaledb:latest-pg14
     container_name: postgres-db
@@ -6,20 +34,29 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: mydb
-    ports:
-      - "5432:5432"
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - web
     restart: always
 
   app:
     build:
       context: .
+    container_name: crud-server
     depends_on:
       - postgres
-    ports:
-      - "7000:7000"
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/mydb
       DB_USER: user
       DB_PASSWORD: password
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=7000"
+      - "traefik.http.middlewares.strip-api.stripprefix.prefixes=/api"
+      - "traefik.http.routers.api.middlewares=strip-api"
+    networks:
+      - web
+    restart: always
