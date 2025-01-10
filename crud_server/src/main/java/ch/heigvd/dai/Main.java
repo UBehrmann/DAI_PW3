@@ -14,10 +14,17 @@ public class Main {
 
         Javalin app = Javalin.create().start(7000);
 
-        // Enregistrement des routes utilisateur
+        // Add CORS headers globally for all requests
+        app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        });
+
+        // Register routes
         UtilisateurController.registerRoutes(app);
 
-        // Ajout d'un endpoint de santé pour vérifier si le serveur fonctionne
+        // Health check endpoint
         app.get("/health", ctx -> ctx.result("Server is running and healthy!"));
     }
 }
