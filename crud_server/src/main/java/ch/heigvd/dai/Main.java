@@ -3,6 +3,7 @@ package ch.heigvd.dai;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
+import io.javalin.http.Context;
 import ch.heigvd.dai.controllers.UtilisateurController;
 
 public class Main {
@@ -24,7 +25,15 @@ public class Main {
         // Register routes
         UtilisateurController.registerRoutes(app);
 
+        // Handle preflight (OPTIONS) requests for all routes
+        app.options("/*", ctx -> handlePreflight(ctx));
+
         // Health check endpoint
         app.get("/health", ctx -> ctx.result("Server is running and healthy!"));
+    }
+
+    private static void handlePreflight(Context ctx) {
+        // Respond to OPTIONS requests
+        ctx.status(204); // No Content
     }
 }

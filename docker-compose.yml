@@ -55,6 +55,7 @@ services:
       - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
       - "traefik.http.routers.api.entrypoints=web"
       - "traefik.http.services.api.loadbalancer.server.port=7000"
+      # Optional: Uncomment the following lines if the backend doesn't expect `/api` in the path
       - "traefik.http.middlewares.strip-api.stripprefix.prefixes=/api"
       - "traefik.http.routers.api.middlewares=strip-api"
     networks:
