@@ -23,6 +23,9 @@ public class UtilisateurController {
 
         // Supprimer un utilisateur
         app.delete("/utilisateurs/{nomUtilisateur}", UtilisateurController::supprimerUtilisateur);
+
+        // Récupérer tous les utilisateurs
+        app.get("/utilisateurs", UtilisateurController::getUtilisateurs);
     }
 
     private static void getUtilisateurByNomUtilisateur(Context ctx) {
@@ -64,4 +67,14 @@ public class UtilisateurController {
         utilisateurService.supprimerUtilisateur(nomUtilisateur);
         ctx.status(200).result("Utilisateur supprimé");
     }
+
+    private static void getUtilisateurs(Context ctx) {
+        Utilisateur[] utilisateurs = utilisateurService.getUtilisateurs();
+        if (utilisateurs != null && utilisateurs.length > 0) {
+            ctx.json(utilisateurs); // Retourner les utilisateurs en JSON
+        } else {
+            ctx.status(404).result("Aucun utilisateur trouvé");
+        }
+    }
+
 }

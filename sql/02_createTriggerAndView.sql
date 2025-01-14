@@ -1,45 +1,9 @@
 SET SEARCH_PATH TO projet, public;
 
--- Création des trigger et des tables supplémentaires
--- Création de vue
+-- Création des trigger et Création de vue
 
 
--- **********************************************************************
--- Logs pour les insertions, changements et suppressions concernant les
--- utilisateurs (groupe, accès aux appareils) dans les tables utilisateur,
--- groupeUtilisateurs,
--- **********************************************************************
-CREATE TABLE LogUtilisateur (
-    id SERIAL PRIMARY KEY, -- ID unique pour chaque log
-    utilisateur VARCHAR(50), -- Nom d'utilisateur concerné
-    action VARCHAR(50), -- Action effectuée (ajouté, modifié, supprimé)
-    details JSONB, -- Informations sur la ligne affectée
-    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date et heure de l'action
-);
 
-CREATE TABLE LogGroupe (
-    id SERIAL PRIMARY KEY,
-    groupe VARCHAR(255), -- Groupe affecté
-    action VARCHAR(50), -- Action effectuée (ajouté, modifié, supprimé)
-    details JSONB, -- Informations sur la ligne affectée
-    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE LogAppartenance (
-    id SERIAL PRIMARY KEY,
-    utilisateur VARCHAR(50), -- Nom d'utilisateur concerné
-    groupe VARCHAR(255), -- Groupe affecté
-    action VARCHAR(50), -- Action effectuée (ajouté, supprimé)
-    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE LogAcces (
-    id SERIAL PRIMARY KEY,
-    groupe VARCHAR(255), -- Groupe concerné
-    ip VARCHAR(15), -- Adresse IP de l'appareil
-    action VARCHAR(50), -- Action effectuée (ajouté, supprimé)
-    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 
 -- pour la table utilisateur
@@ -47,13 +11,13 @@ CREATE OR REPLACE FUNCTION log_modif_utilisateur()
 RETURNS TRIGGER AS $$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        INSERT INTO LogUtilisateur (utilisateur, action, details)
-        VALUES (NEW.nomUtilisateur, 'ajouté', row_to_json(NEW));
+        INSERT INTO projet.LogUtilisateur (utilisateur, action, details)
+        VALUES (NEW.nomUtilisateur, TG_OP, row_to_json(NEW));
     ELSIF (TG_OP = 'UPDATE') THEN
-        INSERT INTO LogUtilisateur (utilisateur, action, details)
+        INSERT INTO projet.LogUtilisateur (utilisateur, action, details)
         VALUES (NEW.nomUtilisateur, 'modifié', jsonb_build_object('ancien', row_to_json(OLD), 'nouveau', row_to_json(NEW)));
     ELSIF (TG_OP = 'DELETE') THEN
-        INSERT INTO LogUtilisateur (utilisateur, action, details)
+        INSERT INTO projet.LogUtilisateur (utilisateur, action, details)
         VALUES (OLD.nomUtilisateur, 'supprimé', row_to_json(OLD));
     END IF;
     RETURN NULL;
@@ -72,13 +36,13 @@ CREATE OR REPLACE FUNCTION log_modif_groupe()
 RETURNS TRIGGER AS $$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        INSERT INTO LogGroupe (groupe, action, details)
+        INSERT INTO projet.LogGroupe (groupe, action, details)
         VALUES (NEW.nom, 'ajouté', row_to_json(NEW));
     ELSIF (TG_OP = 'UPDATE') THEN
-        INSERT INTO LogGroupe (groupe, action, details)
+        INSERT INTO projet.LogGroupe (groupe, action, details)
         VALUES (NEW.nom, 'modifié', jsonb_build_object('ancien', row_to_json(OLD), 'nouveau', row_to_json(NEW)));
     ELSIF (TG_OP = 'DELETE') THEN
-        INSERT INTO LogGroupe (groupe, action, details)
+        INSERT INTO projet.LogGroupe (groupe, action, details)
         VALUES (OLD.nom, 'supprimé', row_to_json(OLD));
     END IF;
     RETURN NULL;
@@ -97,10 +61,10 @@ CREATE OR REPLACE FUNCTION log_modif_appartenance()
 RETURNS TRIGGER AS $$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        INSERT INTO LogAppartenance (utilisateur, groupe, action)
+        INSERT INTO projet.LogAppartenance (utilisateur, groupe, action)
         VALUES (NEW.utilisateur, NEW.groupe, 'ajouté');
     ELSIF (TG_OP = 'DELETE') THEN
-        INSERT INTO LogAppartenance (utilisateur, groupe, action)
+        INSERT INTO projet.LogAppartenance (utilisateur, groupe, action)
         VALUES (OLD.utilisateur, OLD.groupe, 'supprimé');
     END IF;
     RETURN NULL;
@@ -118,10 +82,10 @@ CREATE OR REPLACE FUNCTION log_modif_acces()
 RETURNS TRIGGER AS $$
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        INSERT INTO LogAcces (groupe, ip, action)
+        INSERT INTO projet.LogAcces (groupe, ip, action)
         VALUES (NEW.groupe, NEW.ip, 'ajouté');
     ELSIF (TG_OP = 'DELETE') THEN
-        INSERT INTO LogAcces (groupe, ip, action)
+        INSERT INTO projet.LogAcces (groupe, ip, action)
         VALUES (OLD.groupe, OLD.ip, 'supprimé');
     END IF;
     RETURN NULL;

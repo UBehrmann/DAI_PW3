@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import ch.heigvd.dai.controllers.UtilisateurController;
+import ch.heigvd.dai.controllers.GroupeUtilisateursController;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,6 +25,7 @@ public class Main {
 
         // Register routes
         UtilisateurController.registerRoutes(app);
+        GroupeUtilisateursController.registerRoutes(app);
 
         // Handle preflight (OPTIONS) requests for all routes
         app.options("/*", Main::handlePreflight);

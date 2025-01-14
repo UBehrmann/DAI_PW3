@@ -110,6 +110,8 @@ docker exec -it postgres-db psql -U user -d mydb
 ssh ubuntu@172.201.218.98 -i ~/.ssh/azure
 ```
 
+In .ssh/azure is the private key for the azure vm.
+
 ### Upload crud_server docker image to github container registry
 
 docker build . -t crud_server
@@ -125,7 +127,7 @@ docker push ghcr.io/ubehrmann/db_crud_server:latest
 ### Update dockers sur Azure
 
 docker-compose down
-docker-compose up --build
+docker-compose up -d
 
 ### MAJ docker-compose.yml sur Azure
 

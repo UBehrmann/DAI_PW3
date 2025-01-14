@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Groupes d'Utilisateurs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gestion des Groupes d'Utilisateurs</h1>
+
+    <form id="groupForm">
+        <label for="groupSelect">Sélectionner un groupe :</label>
+        <select id="groupSelect">
+            <option value="">-- Sélectionner --</option>
+        </select>
+
+        <label for="nom">Nom du groupe :</label>
+        <input type="text" id="nom" required>
+
+        <label for="dateCreation">Date de création :</label>
+        <input type="date" id="dateCreation">
+
+        <label for="administrateur">Nom de l'administrateur :</label>
+        <select id="administrateur">
+            <option value="">-- Sélectionner un administrateur --</option>
+        </select>
+
+        <div>
+            <button type="button" id="addBtn">Ajouter</button>
+            <button type="button" id="updateBtn">Mettre à jour</button>
+            <button type="button" id="deleteBtn">Supprimer</button>
+        </div>
+    </form>
+
+    <div id="result">
+        <h3>Résultat :</h3>
+        <pre id="output">Aucun résultat pour l'instant.</pre>
+    </div>
+
+    <script>
+        const apiUrlGroups = "http://localhost/api/groupes"; // URL de l'API pour les groupes
+        const apiUrlUsers = "http://localhost/api/utilisateurs"; // URL de l'API pour les utilisateurs
+        const groupSelect = document.getElementById("groupSelect");
+        const adminSelect = document.getElementById("administrateur");
+        const output = document.getElementById("output");
+
+        // Charger les utilisateurs et remplir la combo-box des administrateurs
+        async function loadUsers() {
+            try {
+                const response = await fetch(apiUrlUsers);
+                if (!response.ok) throw new Error(`Erreur : ${response.status} ${response.statusText}`);
+                const users = await response.json();
+                adminSelect.innerHTML = '<option value="">-- Sélectionner un administrateur --</option>';
+                users.forEach(user => {
+                    const option = document.createElement("option");
+                    option.value = user.nomUtilisateur;
+                    option.textContent = user.nomUtilisateur;
+                    adminSelect.appendChild(option);
+                });
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        }
+
+        // Charger tous les groupes et remplir la combo-box
+        async function loadGroups() {
+            try {
+                const response = await fetch(apiUrlGroups);
+                if (!response.ok) throw new Error(`Erreur : ${response.status} ${response.statusText}`);
+                const groups = await response.json();
+                groupSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
+                groups.forEach(group => {
+                    const option = document.createElement("option");
+                    option.value = group.nom;
+                    option.textContent = group.nom;
+                    groupSelect.appendChild(option);
+                });
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        }
+
+        // Remplir les champs lorsqu'un groupe est sélectionné
+        groupSelect.addEventListener("change", async () => {
+            const nom = groupSelect.value;
+            if (!nom) return;
+            try {
+                const response = await fetch(`${apiUrlGroups}/${nom}`);
+                if (!response.ok) throw new Error(`Erreur : ${response.status} ${response.statusText}`);
+                const group = await response.json();
+                document.getElementById("nom").value = group.nom;
+                document.getElementById("dateCreation").value = formatDate(group.dateCreation);
+                adminSelect.value = group.administrateur;
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        });
+
+        // Ajouter un groupe
+        document.getElementById("addBtn").addEventListener("click", async () => {
+            const group = getGroupData();
+            try {
+                const response = await fetch(apiUrlGroups, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(group),
+                });
+                if (!response.ok) throw new Error(`Erreur : ${response.status} ${response.statusText}`);
+                output.textContent = "Groupe ajouté avec succès.";
+                loadGroups();
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        });
+
+        // Mettre à jour un groupe
+        document.getElementById("updateBtn").addEventListener("click", async () => {
+            const group = getGroupData();
+            try {
+                const response = await fetch(`${apiUrlGroups}/${group.nom}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(group),
+                });
+                if (!response.ok) throw new Error(`Erreur : ${response.status} ${response.statusText}`);
+                output.textContent = "Groupe mis à jour avec succès.";
+                loadGroups();
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        });
+
+        // Supprimer un groupe
+        document.getElementById("deleteBtn").addEventListener("click", async () => {
+            const nom = document.getElementById("nom").value;
+            if (!nom) return alert("Veuillez sélectionner un groupe.");
+            try {
+                const response = await fetch(`${apiUrlGroups}/${nom}`, { method: "DELETE" });
+                if (!response.ok) throw new Error(`Erreur : ${response.status} ${response.statusText}`);
+                output.textContent = "Groupe supprimé avec succès.";
+                loadGroups();
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        });
+
+        // Obtenir les données du groupe depuis les champs du formulaire
+        function getGroupData() {
+            return {
+                nom: document.getElementById("nom").value,
+                dateCreation: document.getElementById("dateCreation").value,
+                administrateur: document.getElementById("administrateur").value,
+            };
+        }
+
+        // Formater la date reçue sous forme de tableau [YYYY, MM, DD]
+        function formatDate(dateArray) {
+            return `${dateArray[0]}-${String(dateArray[1]).padStart(2, '0')}-${String(dateArray[2]).padStart(2, '0')}`;
+        }
+
+        // Charger les groupes et les utilisateurs au chargement de la page
+        loadGroups();
+        loadUsers();
+    </script>
+</body>
+
+</html>

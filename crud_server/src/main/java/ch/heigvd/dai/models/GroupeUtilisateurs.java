@@ -13,6 +13,8 @@ public class GroupeUtilisateurs {
         this.administrateur = administrateur;
     }
 
+    public GroupeUtilisateurs() { }
+
     // Getters et Setters
     public String getNom() {
         return nom;

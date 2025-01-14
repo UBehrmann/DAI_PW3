@@ -34,6 +34,8 @@ public class Utilisateur {
         this.derniereConnexionHeure = derniereConnexionHeure;
     }
 
+    public Utilisateur(){ }
+
     // Getters et Setters
     public String getNom() {
         return nom;

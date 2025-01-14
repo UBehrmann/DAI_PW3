@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class UtilisateurRepository {
     private static final Logger logger = LoggerFactory.getLogger(UtilisateurRepository.class);
@@ -109,4 +114,54 @@ public class UtilisateurRepository {
             logger.error("Error in supprimerUtilisateur", e);
         }
     }
+
+    public Utilisateur[] getUtilisateurs() {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projet.Utilisateur");
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Utilisateur utilisateur = new Utilisateur();
+                utilisateur.setNom(rs.getString("nom"));
+                utilisateur.setPrenom(rs.getString("prenom"));
+                utilisateur.setRue(rs.getString("rue"));
+                utilisateur.setNoRue(rs.getString("noRue"));
+                utilisateur.setNpa(rs.getString("npa"));
+                utilisateur.setLieu(rs.getString("lieu"));
+
+                // Vérification avant conversion de dateNaissance
+                Date dateNaissanceSql = rs.getDate("dateNaissance");
+                if (dateNaissanceSql != null) {
+                    utilisateur.setDateNaissance(dateNaissanceSql.toLocalDate());
+                }
+
+                utilisateur.setNomUtilisateur(rs.getString("nomUtilisateur"));
+                utilisateur.setMotDePasse(rs.getString("motDePasse"));
+                utilisateur.setStatutCompte(rs.getString("statutCompte"));
+
+                // Vérification avant conversion de derniereConnexionDate
+                Date derniereConnexionDateSql = rs.getDate("derniereConnexionDate");
+                if (derniereConnexionDateSql != null) {
+                    utilisateur.setDerniereConnexionDate(derniereConnexionDateSql.toLocalDate());
+                }
+
+                // Vérification avant conversion de derniereConnexionHeure
+                Time derniereConnexionHeureSql = rs.getTime("derniereConnexionHeure");
+                if (derniereConnexionHeureSql != null) {
+                    utilisateur.setDerniereConnexionHeure(derniereConnexionHeureSql.toLocalTime());
+                }
+
+                utilisateurs.add(utilisateur);
+            }
+
+
+            return utilisateurs.toArray(new Utilisateur[0]);
+
+        } catch (Exception e) {
+            logger.error("Error in getUtilisateurs", e);
+        }
+        return null;
+    }
+
 }

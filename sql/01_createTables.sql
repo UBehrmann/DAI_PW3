@@ -165,6 +165,44 @@ CREATE TABLE fournit (
     FOREIGN KEY (type) REFERENCES TypeDeDonnees(nom) ON DELETE CASCADE
 );
 
+-- **********************************************************************
+-- Logs pour les insertions, changements et suppressions concernant les
+-- utilisateurs (groupe, accès aux appareils) dans les tables utilisateur,
+-- groupeUtilisateurs,
+-- **********************************************************************
+
+CREATE TABLE LogUtilisateur (
+    id SERIAL PRIMARY KEY, -- ID unique pour chaque log
+    utilisateur VARCHAR(50), -- Nom d'utilisateur concerné
+    action VARCHAR(50), -- Action effectuée (ajouté, modifié, supprimé)
+    details JSONB, -- Informations sur la ligne affectée
+    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date et heure de l'action
+);
+
+CREATE TABLE LogGroupe (
+    id SERIAL PRIMARY KEY,
+    groupe VARCHAR(255), -- Groupe affecté
+    action VARCHAR(50), -- Action effectuée (ajouté, modifié, supprimé)
+    details JSONB, -- Informations sur la ligne affectée
+    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE LogAppartenance (
+    id SERIAL PRIMARY KEY,
+    utilisateur VARCHAR(50), -- Nom d'utilisateur concerné
+    groupe VARCHAR(255), -- Groupe affecté
+    action VARCHAR(50), -- Action effectuée (ajouté, supprimé)
+    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE LogAcces (
+    id SERIAL PRIMARY KEY,
+    groupe VARCHAR(255), -- Groupe concerné
+    ip VARCHAR(15), -- Adresse IP de l'appareil
+    action VARCHAR(50), -- Action effectuée (ajouté, supprimé)
+    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- configuration de timescale pour de meilleures performances.
 -- divise les tables selon la date
 CREATE EXTENSION IF NOT EXISTS timescaledb;

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>CRUD API Test</h1>
+
+    <h2>Fetch User</h2>
+    <form id="fetchUserForm">
+        <label for="username">Nom Utilisateur:</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required>
+        <button type="submit">Fetch User</button>
+    </form>
+
+    <div id="result">
+        <h3>Result:</h3>
+        <pre id="output">No data fetched yet.</pre>
+    </div>
+
+    <script>
+        document.getElementById("fetchUserForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent page reload
+
+            const username = document.getElementById("username").value.trim();
+            const output = document.getElementById("output");
+
+            // Clear previous results
+            output.textContent = "Loading...";
+            output.classList.remove("error");
+
+            try {
+                // Fetch user data from the API through Traefik
+                const response = await fetch(`http://localhost/api/utilisateurs/${username}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+
+                // Handle non-OK responses
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+
+                const userData = await response.json();
+                output.textContent = JSON.stringify(userData, null, 2); // Pretty print JSON
+            } catch (error) {
+                output.textContent = error.message;
+                output.classList.add("error");
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -25,4 +25,9 @@ public class UtilisateurService {
     public void supprimerUtilisateur(String nomUtilisateur) {
         utilisateurRepository.supprimerUtilisateur(nomUtilisateur);
     }
+
+    // Récupérer tous les utilisateurs
+    public Utilisateur[] getUtilisateurs() {
+        return utilisateurRepository.getUtilisateurs();
+    }
 }
