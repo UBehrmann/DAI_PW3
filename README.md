@@ -103,3 +103,30 @@ docker run -p 7000:7000 ghcr.io/ubehrmann/dai_pw3:latest
 ```bash
 docker exec -it postgres-db psql -U user -d mydb
 ```
+
+## How to connect to the azure vm
+
+```bash
+ssh ubuntu@172.201.218.98 -i ~/.ssh/azure
+```
+
+### Upload crud_server docker image to github container registry
+
+docker build . -t crud_server
+docker tag crud_server ghcr.io/ubehrmann/crud_server:latest
+docker push ghcr.io/ubehrmann/crud_server:latest
+
+### Upload db_crud_server docker image to github container registry
+
+docker build . -t db_crud_server 
+docker tag db_crud_server ghcr.io/ubehrmann/db_crud_server:latest
+docker push ghcr.io/ubehrmann/db_crud_server:latest
+
+### Update dockers sur Azure
+
+docker-compose down
+docker-compose up --build
+
+### MAJ docker-compose.yml sur Azure
+
+scp -i ~/.ssh/azure /wsl.localhost/Ubuntu/home/ub/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~

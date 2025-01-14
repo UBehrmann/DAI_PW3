@@ -28,21 +28,18 @@ services:
     restart: always
 
   postgres:
-    image: timescale/timescaledb:latest-pg14
+    image: ghcr.io/ubehrmann/db_crud_server:latest
     container_name: postgres-db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: mydb
-    volumes:
-      - ./sql:/docker-entrypoint-initdb.d
     networks:
       - web
     restart: always
 
   app:
-    build:
-      context: .
+    image: ghcr.io/ubehrmann/crud_server:latest
     container_name: crud-server
     depends_on:
       - postgres
@@ -52,7 +49,7 @@ services:
       DB_PASSWORD: password
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.api.entrypoints=web"
       - "traefik.http.services.api.loadbalancer.server.port=7000"
       # Optional: Uncomment the following lines if the backend doesn't expect `/api` in the path

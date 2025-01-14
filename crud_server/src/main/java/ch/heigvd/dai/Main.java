@@ -26,7 +26,7 @@ public class Main {
         UtilisateurController.registerRoutes(app);
 
         // Handle preflight (OPTIONS) requests for all routes
-        app.options("/*", ctx -> handlePreflight(ctx));
+        app.options("/*", Main::handlePreflight);
 
         // Health check endpoint
         app.get("/health", ctx -> ctx.result("Server is running and healthy!"));
