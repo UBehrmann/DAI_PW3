@@ -1,11 +1,13 @@
 package ch.heigvd.dai.models;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class GroupeUtilisateurs {
     private String nom; // Clé primaire
     private LocalDate dateCreation;
     private String administrateur; // Clé étrangère vers Utilisateur
+    private List<String> utilisateurs; // Liste des utilisateurs du groupe
 
     public GroupeUtilisateurs(String nom, LocalDate dateCreation, String administrateur) {
         this.nom = nom;
@@ -38,5 +40,13 @@ public class GroupeUtilisateurs {
 
     public void setAdministrateur(String administrateur) {
         this.administrateur = administrateur;
+    }
+
+    public List<String> getUtilisateurs() {
+        return utilisateurs;
+    }
+
+    public void setUtilisateurs(List<String> utilisateurs) {
+        this.utilisateurs = utilisateurs;
     }
 }

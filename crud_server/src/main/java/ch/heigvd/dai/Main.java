@@ -6,6 +6,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import ch.heigvd.dai.controllers.UtilisateurController;
 import ch.heigvd.dai.controllers.GroupeUtilisateursController;
+import ch.heigvd.dai.controllers.AppartientAController;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,6 +27,7 @@ public class Main {
         // Register routes
         UtilisateurController.registerRoutes(app);
         GroupeUtilisateursController.registerRoutes(app);
+        AppartientAController.registerRoutes(app);
 
         // Handle preflight (OPTIONS) requests for all routes
         app.options("/*", Main::handlePreflight);

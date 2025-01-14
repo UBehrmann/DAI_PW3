@@ -9,6 +9,8 @@ public class AppartientA {
         this.groupe = groupe;
     }
 
+    public AppartientA() { }
+
     // Getters et Setters
     public String getUtilisateur() {
         return utilisateur;

@@ -15,22 +15,42 @@ public class GroupeUtilisateursRepository {
     private static final Logger logger = LoggerFactory.getLogger(GroupeUtilisateursRepository.class);
 
     public GroupeUtilisateurs getGroupeByNom(String nom) {
-        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projet.GroupeUtilisateurs WHERE nom = ?")) {
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection()) {
+            // Récupérer les détails du groupe
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projet.GroupeUtilisateurs WHERE nom = ?");
             stmt.setString(1, nom);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                return new GroupeUtilisateurs(
+                GroupeUtilisateurs groupe = new GroupeUtilisateurs(
                         rs.getString("nom"),
                         rs.getDate("dateCreation").toLocalDate(),
                         rs.getString("administrateur")
                 );
+
+                // Récupérer les utilisateurs du groupe
+                PreparedStatement stmtUsers = conn.prepareStatement(
+                        "SELECT utilisateur FROM projet.appartient_a WHERE groupe = ?"
+                );
+                stmtUsers.setString(1, nom);
+                ResultSet rsUsers = stmtUsers.executeQuery();
+
+                List<String> utilisateurs = new ArrayList<>();
+                while (rsUsers.next()) {
+                    utilisateurs.add(rsUsers.getString("utilisateur"));
+                }
+
+                // Ajouter la liste des utilisateurs au groupe
+                groupe.setUtilisateurs(utilisateurs);
+
+                return groupe;
             }
         } catch (Exception e) {
             logger.error("Error retrieving group by name: {}", nom, e);
         }
         return null;
     }
+
 
     public void ajouterGroupe(GroupeUtilisateurs groupe) {
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();

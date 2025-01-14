@@ -132,3 +132,5 @@ docker-compose up -d
 ### MAJ docker-compose.yml sur Azure
 
 scp -i ~/.ssh/azure /wsl.localhost/Ubuntu/home/ub/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~
+
+ip: 172.201.218.98
