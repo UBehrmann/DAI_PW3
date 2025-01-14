@@ -127,10 +127,11 @@ docker push ghcr.io/ubehrmann/db_crud_server:latest
 ### Update dockers sur Azure
 
 docker-compose down
-docker-compose up -d
+docker-compose pull
+docker-compose up -d --build
 
 ### MAJ docker-compose.yml sur Azure
 
-scp -i ~/.ssh/azure /wsl.localhost/Ubuntu/home/ub/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~
+scp -i ~/.ssh/azure ~/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~
 
 ip: 172.201.218.98
