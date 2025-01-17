@@ -1,11 +1,31 @@
-# DAI_PW3
+# DAI_PW3 <!-- omit in toc -->
 
-## Authors
+## Authors <!-- omit in toc -->
 
 - [Rodrigo Lopez Dos Santos](https://github.com/RodrigoLopesDos)
 - [Urs Behrmann](https://github.com/UBehrmann) 
 
-## How to run the service
+# Table of contents
+
+- [Table of contents](#table-of-contents)
+- [How to run the service](#how-to-run-the-service)
+  - [1 Build from source](#1-build-from-source)
+  - [2 Build and run docker image](#2-build-and-run-docker-image)
+  - [3 Use the docker image from github packages](#3-use-the-docker-image-from-github-packages)
+- [How to connect to the database with docker](#how-to-connect-to-the-database-with-docker)
+- [How to connect to the Azure virtual machine](#how-to-connect-to-the-azure-virtual-machine)
+  - [How to add the teaching staff's public key to the virtual machine](#how-to-add-the-teaching-staffs-public-key-to-the-virtual-machine)
+- [API Documentation](#api-documentation)
+- [Examples of API calls](#examples-of-api-calls)
+- [how to install and configure the virtual machine](#how-to-install-and-configure-the-virtual-machine)
+- [how to configure the DNS zone](#how-to-configure-the-dns-zone)
+- [how to deploy, run and access the web applications with Docker Compose](#how-to-deploy-run-and-access-the-web-applications-with-docker-compose)
+    - [Upload crud\_server docker image to github container registry](#upload-crud_server-docker-image-to-github-container-registry)
+    - [Upload db\_crud\_server docker image to github container registry](#upload-db_crud_server-docker-image-to-github-container-registry)
+    - [Update dockers sur Azure](#update-dockers-sur-azure)
+    - [MAJ docker-compose.yml sur Azure](#maj-docker-composeyml-sur-azure)
+
+# How to run the service
 
 There are 3 ways to run this service:
 - Build from source with your IDE of choice
@@ -14,7 +34,7 @@ There are 3 ways to run this service:
 
 ___
 
-### 1 Build from source
+## 1 Build from source
 
 First clone this repo on your machine and `cd` in the cloned folder:
 
@@ -23,14 +43,14 @@ git clone git@github.com:UBehrmann/DAI_PW3.git
 cd crud_server
 ```
 
-####  Prerequisites
+###  Prerequisites  <!-- omit in toc -->
 
 Make sure you have the following installed on your system:
 
 - [Maven](https://maven.apache.org/)
 - [SdkMan](https://sdkman.io/)
 
-#### Steps to Build and Run
+### Steps to Build and Run  <!-- omit in toc -->
 
 1. Download the project dependencies:
 ```bash
@@ -51,7 +71,7 @@ java -jar target/java-tcp-programming-1.0-SNAPSHOT.jar
 
 ___
 
-### 2 Build and run docker image
+## 2 Build and run docker image
 
 First, clone this repository on your machine and navigate into the cloned folder:
 
@@ -60,7 +80,7 @@ git clone git@github.com:UBehrmann/DAI_PW3.git
 cd crud_server
 ```
 
-**Build the Docker Image**
+## Build the Docker Image <!-- omit in toc -->
 
 Run the following command to build the Docker image:
 
@@ -68,9 +88,35 @@ Run the following command to build the Docker image:
 docker build -t crud_server .
 ```
 
-**Run the Service with Docker Compose**
+## Tag the docker images <!-- omit in toc -->
 
-To build and run the service along with the database, use:
+Tag the docker image with the following command:
+
+```bash
+docker tag crud_server ghcr.io/ubehrmann/crud_server:latest
+```
+
+(Update the tag with your GitHub username and the name of the repository)
+
+## Push the docker images to GitHub Packages <!-- omit in toc -->
+
+Push the docker image to GitHub Packages with the following command:
+
+```bash
+docker push ghcr.io/ubehrmann/crud_server:latest
+```
+
+(Update the tag with your GitHub username and the name of the repository)
+
+### Run the Service with Docker Compose  <!-- omit in toc -->
+
+Pull the necessary images:
+
+```bash
+docker-compose pull
+```
+
+Build and run the service along with the database, use:
 
 ```bash
 docker-compose up --build
@@ -82,14 +128,26 @@ If the build has already been done, you can simply start the containers without 
 docker-compose start
 ```
 
+To stop the containers, use:
+
+```bash
+docker-compose stop
+```
+
+To stop and remove the containers, use:
+
+```bash
+docker-compose down
+```
+
 ___
 
-### 3 Use the docker image from github packages
+## 3 Use the docker image from github packages
 
 1. Pull the Docker image from GitHub Packages:
 
 ```bash
-docker pull ghcr.io/ubehrmann/dai_pw3:latest
+docker pull ghcr.io/ubehrmann/crud_server:latest
 ```
 
 2. Run the Docker container:
@@ -98,19 +156,116 @@ docker pull ghcr.io/ubehrmann/dai_pw3:latest
 docker run -p 7000:7000 ghcr.io/ubehrmann/dai_pw3:latest
 ```
 
-## How to connect to the db with docker
+___
+
+# How to connect to the database with docker
+
+When the docker container is running, you can connect to the database with the following command:
 
 ```bash
 docker exec -it postgres-db psql -U user -d mydb
 ```
 
-## How to connect to the azure vm
+After running this command, you will be connected to the database and can run SQL queries.
+
+___
+
+# How to connect to the Azure virtual machine
+
+In order to connect to the Azure virtual machine, you need to have the private key for the virtual machine. You can connect to the virtual machine with the following command:
 
 ```bash
 ssh ubuntu@172.201.218.98 -i ~/.ssh/azure
 ```
 
 In .ssh/azure is the private key for the azure vm.
+
+## How to add the teaching staff's public key to the virtual machine
+
+### Export the public key to the authorized_keys file <!-- omit in toc -->
+
+```bash
+export TEACHING_STAFF_SSH_PUBLIC_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5deyMbQaRaiO4ojymkCoWBtwPyG8Y+4BbLQsb413KC heig-vd-dai-course"
+```
+
+
+### Add the teaching staff's public key to the authorized_keys file <!-- omit in toc -->
+
+```bash
+echo "${TEACHING_STAFF_SSH_PUBLIC_KEY}" | ssh ubuntu@172.201.218.98  -i ~/.ssh/azure "cat >> ~/.ssh/authorized_keys"
+```
+
+___
+
+# API Documentation
+
+There are a lot of endpoints in this API. We categorized with the access point.
+
+## /api/utilisateurs <!-- omit in toc -->
+
+
+
+## /api/groupes <!-- omit in toc -->
+
+
+
+## /api/groupes/utilisateurs <!-- omit in toc -->
+
+
+
+## /api/ <!-- omit in toc -->
+
+
+___
+
+# Examples of API calls
+
+## Get all users <!-- omit in toc -->
+
+```bash
+curl -X GET https://ub-dai.duckdns.org/api/utilisateurs
+```
+
+## Add a user <!-- omit in toc -->
+
+```bash
+
+```
+
+## Remove a user <!-- omit in toc -->
+
+```bash
+
+```
+
+## Update a user <!-- omit in toc -->
+
+```bash
+
+```
+___
+
+# how to install and configure the virtual machine
+
+
+___
+
+# how to configure the DNS zone
+
+We configured the was registered with the domain name ub-dai.duckdns.org at DuckDNS.
+
+The DNS zone is configured with the following records:
+
+![dns zone](imgs/dns.png)
+
+https://dashboard.ub-dai.duckdns.org/
+
+Username: admin
+
+Password: mypassword
+___
+
+# how to deploy, run and access the web applications with Docker Compose
 
 ### Upload crud_server docker image to github container registry
 
@@ -132,6 +287,9 @@ docker-compose up -d --build
 
 ### MAJ docker-compose.yml sur Azure
 
-scp -i ~/.ssh/azure ~/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~
+scp -i ~/.ssh/azure ~/DAI/DAI_PW3/Azure/docker-compose.yml ubuntu@172.201.218.98:~
 
 ip: 172.201.218.98
+
+curl http://ub-dai.duckdns.org/api/utilisateurs
+curl https://ub-dai.duckdns.org/api/utilisateurs

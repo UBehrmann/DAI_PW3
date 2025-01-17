@@ -13,19 +13,19 @@ public class UtilisateurController {
 
     public static void registerRoutes(Javalin app) {
         // Récupérer un utilisateur par son nomUtilisateur
-        app.get("/utilisateurs/{nomUtilisateur}", UtilisateurController::getUtilisateurByNomUtilisateur);
+        app.get("/api/utilisateurs/{nomUtilisateur}", UtilisateurController::getUtilisateurByNomUtilisateur);
 
         // Ajouter un nouvel utilisateur
-        app.post("/utilisateurs", UtilisateurController::ajouterUtilisateur);
+        app.post("/api/utilisateurs", UtilisateurController::ajouterUtilisateur);
 
         // Mettre à jour un utilisateur
-        app.put("/utilisateurs/{nomUtilisateur}", UtilisateurController::mettreAJourUtilisateur);
+        app.put("/api/utilisateurs/{nomUtilisateur}", UtilisateurController::mettreAJourUtilisateur);
 
         // Supprimer un utilisateur
-        app.delete("/utilisateurs/{nomUtilisateur}", UtilisateurController::supprimerUtilisateur);
+        app.delete("/api/utilisateurs/{nomUtilisateur}", UtilisateurController::supprimerUtilisateur);
 
         // Récupérer tous les utilisateurs
-        app.get("/utilisateurs", UtilisateurController::getUtilisateurs);
+        app.get("/api/utilisateurs", UtilisateurController::getUtilisateurs);
     }
 
     private static void getUtilisateurByNomUtilisateur(Context ctx) {

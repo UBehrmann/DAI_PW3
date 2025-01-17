@@ -11,11 +11,11 @@ public class GroupeUtilisateursController {
     private static final GroupeUtilisateursService groupeUtilisateurService = new GroupeUtilisateursService();
 
     public static void registerRoutes(Javalin app) {
-        app.get("/groupes", GroupeUtilisateursController::getGroupes);
-        app.get("/groupes/{nom}", GroupeUtilisateursController::getGroupeByNom);
-        app.post("/groupes", GroupeUtilisateursController::ajouterGroupe);
-        app.put("/groupes/{nom}", GroupeUtilisateursController::mettreAJourGroupe);
-        app.delete("/groupes/{nom}", GroupeUtilisateursController::supprimerGroupe);
+        app.get("/api/groupes", GroupeUtilisateursController::getGroupes);
+        app.get("/api/groupes/{nom}", GroupeUtilisateursController::getGroupeByNom);
+        app.post("/api/groupes", GroupeUtilisateursController::ajouterGroupe);
+        app.put("/api/groupes/{nom}", GroupeUtilisateursController::mettreAJourGroupe);
+        app.delete("/api/groupes/{nom}", GroupeUtilisateursController::supprimerGroupe);
     }
 
     private static void getGroupes(Context ctx) {

@@ -30,10 +30,10 @@ public class Main {
         AppartientAController.registerRoutes(app);
 
         // Handle preflight (OPTIONS) requests for all routes
-        app.options("/*", Main::handlePreflight);
+        app.options("/api/*", Main::handlePreflight);
 
         // Health check endpoint
-        app.get("/health", ctx -> ctx.result("Server is running and healthy!"));
+        app.get("/api/health", ctx -> ctx.result("Server is running and healthy!"));
     }
 
     private static void handlePreflight(Context ctx) {

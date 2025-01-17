@@ -11,8 +11,8 @@ public class AppartientAController {
     private static final AppartientAService appartientAService = new AppartientAService();
 
     public static void registerRoutes(Javalin app) {
-        app.post("/groupes/utilisateurs", AppartientAController::ajouterUtilisateurDansGroupe);
-        app.delete("/groupes/utilisateurs/{groupe}/{utilisateur}", AppartientAController::supprimerUtilisateurDeGroupe);
+        app.post("/api/groupes/utilisateurs", AppartientAController::ajouterUtilisateurDansGroupe);
+        app.delete("/api/groupes/utilisateurs/{groupe}/{utilisateur}", AppartientAController::supprimerUtilisateurDeGroupe);
     }
 
     private static void ajouterUtilisateurDansGroupe(Context ctx) {
