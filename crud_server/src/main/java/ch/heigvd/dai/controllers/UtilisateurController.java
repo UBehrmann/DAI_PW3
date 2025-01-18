@@ -26,6 +26,9 @@ public class UtilisateurController {
 
         // Récupérer tous les utilisateurs
         app.get("/api/utilisateurs", UtilisateurController::getUtilisateurs);
+
+        // Vérifier un utilisateur
+        app.get("/api/utilisateurs/{nomUtilisateur}/{motDePasse}", UtilisateurController::verifierUtilisateur);
     }
 
     private static void getUtilisateurByNomUtilisateur(Context ctx) {
@@ -74,6 +77,17 @@ public class UtilisateurController {
             ctx.json(utilisateurs); // Retourner les utilisateurs en JSON
         } else {
             ctx.status(404).result("Aucun utilisateur trouvé");
+        }
+    }
+
+    private static void verifierUtilisateur(Context ctx) {
+        String nomUtilisateur = ctx.pathParam("nomUtilisateur");
+        String motDePasse = ctx.pathParam("motDePasse");
+        boolean utilisateurExiste = utilisateurService.verifierUtilisateur(nomUtilisateur, motDePasse);
+        if (utilisateurExiste) {
+            ctx.status(200).result("Utilisateur trouvé");
+        } else {
+            ctx.status(404).result("Utilisateur introuvable");
         }
     }
 

@@ -106,4 +106,25 @@ public class GroupeUtilisateursRepository {
         }
         return groupes;
     }
+
+    public List<GroupeUtilisateurs> getGroupesByUtilisateur(String utilisateur) {
+        List<GroupeUtilisateurs> groupes = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM projet.GroupeUtilisateurs WHERE administrateur = ?")) {
+            stmt.setString(1, utilisateur);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                groupes.add(new GroupeUtilisateurs(
+                        rs.getString("nom"),
+                        rs.getDate("dateCreation").toLocalDate(),
+                        rs.getString("administrateur")
+                ));
+            }
+        } catch (Exception e) {
+            logger.error("Error retrieving groups by user", e);
+        }
+        return groupes;
+    }
 }

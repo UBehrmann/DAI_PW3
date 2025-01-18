@@ -30,4 +30,8 @@ public class UtilisateurService {
     public Utilisateur[] getUtilisateurs() {
         return utilisateurRepository.getUtilisateurs();
     }
+
+    public boolean verifierUtilisateur(String nomUtilisateur, String motDePasse) {
+        return utilisateurRepository.verifierUtilisateur(nomUtilisateur, motDePasse);
+    }
 }

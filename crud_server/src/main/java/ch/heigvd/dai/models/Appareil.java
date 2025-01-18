@@ -13,6 +13,8 @@ public class Appareil {
         this.status = status;
     }
 
+    public Appareil() { }
+
     // Getters et Setters
     public String getNom() {
         return nom;

@@ -164,4 +164,26 @@ public class UtilisateurRepository {
         return null;
     }
 
+    public boolean verifierUtilisateur(String nomUtilisateur, String motDePasse) {
+        logger.info("Verifying user credentials for nomUtilisateur: {}", nomUtilisateur);
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT COUNT(*) AS count FROM projet.Utilisateur WHERE nomUtilisateur = ? AND motDePasse = ?")) {
+            stmt.setString(1, nomUtilisateur);
+            stmt.setString(2, motDePasse);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt("count") > 0) {
+                logger.info("Valid credentials for user: {}", nomUtilisateur);
+                return true;
+            } else {
+                logger.warn("Invalid credentials for user: {}", nomUtilisateur);
+                return false;
+            }
+        } catch (Exception e) {
+            logger.error("Error verifying user credentials for nomUtilisateur: {}", nomUtilisateur, e);
+            return false;
+        }
+    }
+
+
 }

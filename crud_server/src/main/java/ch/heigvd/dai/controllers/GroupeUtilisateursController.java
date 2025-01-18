@@ -13,6 +13,7 @@ public class GroupeUtilisateursController {
     public static void registerRoutes(Javalin app) {
         app.get("/api/groupes", GroupeUtilisateursController::getGroupes);
         app.get("/api/groupes/{nom}", GroupeUtilisateursController::getGroupeByNom);
+        app.get("/api/groupes/{nomUtilisateur}", GroupeUtilisateursController::getGroupesByUtilisateur);
         app.post("/api/groupes", GroupeUtilisateursController::ajouterGroupe);
         app.put("/api/groupes/{nom}", GroupeUtilisateursController::mettreAJourGroupe);
         app.delete("/api/groupes/{nom}", GroupeUtilisateursController::supprimerGroupe);
@@ -31,6 +32,12 @@ public class GroupeUtilisateursController {
         } else {
             ctx.status(404).result("Groupe introuvable");
         }
+    }
+
+    private static void getGroupesByUtilisateur(Context ctx) {
+        String nomUtilisateur = ctx.pathParam("nomUtilisateur");
+        List<GroupeUtilisateurs> groupes = groupeUtilisateurService.getGroupesByUtilisateur(nomUtilisateur);
+        ctx.json(groupes);
     }
 
     private static void ajouterGroupe(Context ctx) {

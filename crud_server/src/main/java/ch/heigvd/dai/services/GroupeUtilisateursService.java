@@ -27,4 +27,8 @@ public class GroupeUtilisateursService {
     public List<GroupeUtilisateurs> getGroupes() {
         return groupeUtilisateurRepository.getGroupes();
     }
+
+    public List<GroupeUtilisateurs> getGroupesByUtilisateur(String nomUtilisateur) {
+        return groupeUtilisateurRepository.getGroupesByUtilisateur(nomUtilisateur);
+    }
 }
