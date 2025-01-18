@@ -1,12 +1,10 @@
 package ch.heigvd.dai;
 
+import ch.heigvd.dai.controllers.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import ch.heigvd.dai.controllers.UtilisateurController;
-import ch.heigvd.dai.controllers.GroupeUtilisateursController;
-import ch.heigvd.dai.controllers.AppartientAController;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,10 +23,13 @@ public class Main {
         });
 
         // Register routes
-        UtilisateurController.registerRoutes(app);
-        GroupeUtilisateursController.registerRoutes(app);
+        AppareilController.registerRoutes(app);
         AppartientAController.registerRoutes(app);
-
+        GroupeCapteursController.registerRoutes(app);
+        GroupeUtilisateursController.registerRoutes(app);
+        SerieController.registerRoutes(app);
+        UtilisateurController.registerRoutes(app);
+        
         // Handle preflight (OPTIONS) requests for all routes
         app.options("/api/*", Main::handlePreflight);
 

@@ -1,7 +1,7 @@
 package ch.heigvd.dai.services;
 
-import ch.heigvd.dai.models.Alerte;
-import ch.heigvd.dai.models.Configuration;
+import ch.heigvd.dai.models.Appareil;
+import ch.heigvd.dai.models.Serie;
 import ch.heigvd.dai.repositories.AppareilRepository;
 
 import java.util.List;
@@ -9,27 +9,23 @@ import java.util.List;
 public class AppareilService {
     private final AppareilRepository appareilRepository = new AppareilRepository();
 
-    public Configuration getConfiguration(int idAppareil) {
-        return appareilRepository.getConfiguration(idAppareil);
+    public Appareil getAppareilByIp(String ip) {
+        return appareilRepository.getAppareilByIp(ip);
     }
 
-    public List<Alerte> getAlertes(int idAppareil) {
-        return appareilRepository.getAlertes(idAppareil);
+    public List<Serie> getSeriesForAppareil(String ip) {
+        return appareilRepository.getSeriesForAppareil(ip);
     }
 
-    public void modifierConfiguration(int idAppareil, Configuration configuration) {
-        appareilRepository.modifierConfiguration(idAppareil, configuration);
+    public void createAppareil(Appareil appareil) {
+        appareilRepository.createAppareil(appareil);
     }
 
-    public void ajouterAlerte(int idAppareil, Alerte alerte) {
-        appareilRepository.ajouterAlerte(idAppareil, alerte);
+    public void updateAppareil(String ip, Appareil appareil) {
+        appareilRepository.updateAppareil(ip, appareil);
     }
 
-    public void supprimerAlerte(int idAppareil, String timestamp) {
-        appareilRepository.supprimerAlerte(idAppareil, timestamp);
-    }
-
-    public void modifierAlerte(int idAppareil, Alerte alerte) {
-        appareilRepository.modifierAlerte(idAppareil, alerte);
+    public void deleteAppareil(String ip) {
+        appareilRepository.deleteAppareil(ip);
     }
 }
