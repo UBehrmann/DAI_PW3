@@ -27,9 +27,10 @@ public class Main {
         AppartientAController.registerRoutes(app);
         GroupeCapteursController.registerRoutes(app);
         GroupeUtilisateursController.registerRoutes(app);
+        PointDeDonneesController.registerRoutes(app);
         SerieController.registerRoutes(app);
         UtilisateurController.registerRoutes(app);
-        
+
         // Handle preflight (OPTIONS) requests for all routes
         app.options("/api/*", Main::handlePreflight);
 
