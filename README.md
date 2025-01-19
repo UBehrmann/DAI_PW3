@@ -283,7 +283,7 @@ docker push ghcr.io/ubehrmann/db_crud_server:latest
 
 docker-compose down
 docker-compose pull
-docker-compose up -d --build
+docker-compose up --build
 
 ### MAJ docker-compose.yml sur Azure
 

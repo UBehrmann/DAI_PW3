@@ -53,17 +53,31 @@ public class GroupeUtilisateursRepository {
 
 
     public void ajouterGroupe(GroupeUtilisateurs groupe) {
-        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "INSERT INTO projet.GroupeUtilisateurs (nom, dateCreation, administrateur) VALUES (?, ?, ?)")) {
-            stmt.setString(1, groupe.getNom());
-            stmt.setObject(2, groupe.getDateCreation());
-            stmt.setString(3, groupe.getAdministrateur());
-            stmt.executeUpdate();
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection()) {
+            conn.setAutoCommit(false); // Start a transaction
+
+            // Insert the group into the GroupeUtilisateurs table
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO projet.GroupeUtilisateurs (nom, dateCreation, administrateur) VALUES (?, CURRENT_DATE, ?)")) {
+                stmt.setString(1, groupe.getNom());
+                stmt.setString(2, groupe.getAdministrateur());
+                stmt.executeUpdate();
+            }
+
+            // Add the administrator to the appartient_a table
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO projet.appartient_a (utilisateur, groupe) VALUES (?, ?)")) {
+                stmt.setString(1, groupe.getAdministrateur());
+                stmt.setString(2, groupe.getNom());
+                stmt.executeUpdate();
+            }
+
+            conn.commit(); // Commit the transaction
         } catch (Exception e) {
-            logger.error("Error adding group", e);
+            logger.error("Error adding group and administrator association", e);
         }
     }
+
 
     public void mettreAJourGroupe(GroupeUtilisateurs groupe) {
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();

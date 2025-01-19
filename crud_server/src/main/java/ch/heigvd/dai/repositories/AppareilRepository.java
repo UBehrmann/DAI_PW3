@@ -10,13 +10,59 @@ import java.util.List;
 
 public class AppareilRepository {
 
-    public Appareil getAppareilByIp(String ip) {
+    public List<Appareil> getAllAppareils() {
+        List<Appareil> appareils = new ArrayList<>();
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projet.appareil WHERE ip = ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projet.Appareil")) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                appareils.add(new Appareil(
+                        rs.getString("nom"),
+                        rs.getString("ip"),
+                        rs.getString("type"),
+                        rs.getString("status")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return appareils;
+    }
+
+    public List<Appareil> getAppareilsForUser(String username) {
+        List<Appareil> appareils = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT a.nom, a.ip, a.type, a.status " +
+                             "FROM projet.Utilisateur u " +
+                             "JOIN projet.appartient_a aa ON u.nomUtilisateur = aa.utilisateur " +
+                             "JOIN projet.a_acces aac ON aa.groupe = aac.groupe " +
+                             "join projet.appareil a ON a.ip = aac.ip " +
+                             "WHERE u.nomUtilisateur = ?")) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                appareils.add(new Appareil(
+                        rs.getString("nom"),
+                        rs.getString("ip"),
+                        rs.getString("type"),
+                        rs.getString("status")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return appareils;
+    }
+
+    public Appareil getAppareilByIp(String ip) {
+        Appareil appareil = null;
+        try (Connection conn = DatabaseConfig.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projet.Appareil WHERE ip = ?")) {
             stmt.setString(1, ip);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Appareil(
+                appareil = new Appareil(
                         rs.getString("nom"),
                         rs.getString("ip"),
                         rs.getString("type"),
@@ -26,15 +72,15 @@ public class AppareilRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return appareil;
     }
 
     public List<Serie> getSeriesForAppareil(String ip) {
         List<Serie> series = new ArrayList<>();
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM projet.serie WHERE appareil_id = " +
-                             "(SELECT id FROM projet.appareil WHERE ip = ?)")) {
+                     "SELECT s.id, s.nom, s.config_id, s.appareil_ip " +
+                             "FROM projet.Serie s WHERE s.appareil_ip = ?")) {
             stmt.setString(1, ip);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -42,7 +88,7 @@ public class AppareilRepository {
                         rs.getInt("id"),
                         rs.getString("nom"),
                         rs.getInt("config_id"),
-                        rs.getString("type")
+                        rs.getString("appareil_ip")
                 ));
             }
         } catch (Exception e) {
@@ -54,7 +100,7 @@ public class AppareilRepository {
     public void createAppareil(Appareil appareil) {
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     "INSERT INTO projet.appareil (nom, ip, type, status) VALUES (?, ?, ?, ?)")) {
+                     "INSERT INTO projet.Appareil (nom, ip, type, status) VALUES (?, ?, ?, ?)")) {
             stmt.setString(1, appareil.getNom());
             stmt.setString(2, appareil.getIp());
             stmt.setString(3, appareil.getType());
@@ -68,7 +114,7 @@ public class AppareilRepository {
     public void updateAppareil(String ip, Appareil appareil) {
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     "UPDATE projet.appareil SET nom = ?, type = ?, status = ? WHERE ip = ?")) {
+                     "UPDATE projet.Appareil SET nom = ?, type = ?, status = ? WHERE ip = ?")) {
             stmt.setString(1, appareil.getNom());
             stmt.setString(2, appareil.getType());
             stmt.setString(3, appareil.getStatus());
@@ -81,7 +127,8 @@ public class AppareilRepository {
 
     public void deleteAppareil(String ip) {
         try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-             PreparedStatement stmt = conn.prepareStatement("DELETE FROM projet.appareil WHERE ip = ?")) {
+             PreparedStatement stmt = conn.prepareStatement(
+                     "DELETE FROM projet.Appareil WHERE ip = ?")) {
             stmt.setString(1, ip);
             stmt.executeUpdate();
         } catch (Exception e) {

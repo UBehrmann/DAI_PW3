@@ -2,6 +2,7 @@ package ch.heigvd.dai.controllers;
 
 import ch.heigvd.dai.models.Alerte;
 import ch.heigvd.dai.models.Configuration;
+import ch.heigvd.dai.models.Serie;
 import ch.heigvd.dai.services.SerieService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -23,13 +24,22 @@ public class SerieController {
 
     private static void getConfigurations(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        List<Configuration> configurations = serieService.getConfigurations(id);
-        ctx.json(configurations);
+        Configuration configuration = serieService.getConfigurationForSerie(id);
+        if (configuration != null) {
+            ctx.json(configuration);
+        } else {
+            ctx.status(404).result("Configuration non trouvée pour la série spécifiée.");
+        }
     }
 
     private static void getAlertes(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        ctx.json(serieService.getAlertes(id));
+        List<Alerte> alertes = serieService.getAlertes(id);
+        if (alertes != null && !alertes.isEmpty()) {
+            ctx.json(alertes);
+        } else {
+            ctx.status(404).result("Aucune alerte trouvée pour cette série.");
+        }
     }
 
     private static void ajouterConfiguration(Context ctx) {
@@ -40,10 +50,9 @@ public class SerieController {
     }
 
     private static void modifierConfiguration(Context ctx) {
-        int id = Integer.parseInt(ctx.pathParam("id"));
         int configId = Integer.parseInt(ctx.pathParam("configId"));
         Configuration configuration = ctx.bodyAsClass(Configuration.class);
-        serieService.modifierConfiguration(id, configId, configuration);
+        serieService.modifierConfiguration(configId, configuration);
         ctx.status(200).result("Configuration modifiée avec succès.");
     }
 
@@ -67,4 +76,5 @@ public class SerieController {
         serieService.supprimerAlerte(id, timestamp);
         ctx.status(200).result("Alerte supprimée avec succès.");
     }
+
 }

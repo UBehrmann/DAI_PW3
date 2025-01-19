@@ -23,8 +23,10 @@ public class Main {
         });
 
         // Register routes
+        AAccesController.registerRoutes(app);
         AppareilController.registerRoutes(app);
         AppartientAController.registerRoutes(app);
+        EstComposeDeController.registerRoutes(app);
         GroupeCapteursController.registerRoutes(app);
         GroupeUtilisateursController.registerRoutes(app);
         PointDeDonneesController.registerRoutes(app);

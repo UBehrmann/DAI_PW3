@@ -2,6 +2,7 @@ package ch.heigvd.dai.services;
 
 import ch.heigvd.dai.models.Alerte;
 import ch.heigvd.dai.models.Configuration;
+import ch.heigvd.dai.models.Serie;
 import ch.heigvd.dai.repositories.SerieRepository;
 
 import java.util.List;
@@ -9,31 +10,32 @@ import java.util.List;
 public class SerieService {
     private final SerieRepository serieRepository = new SerieRepository();
 
-    public List<Configuration> getConfigurations(int idSerie) {
-        return serieRepository.getConfigurations(idSerie);
+    public Configuration getConfigurationForSerie(int id) {
+        return serieRepository.getConfigurationForSerie(id);
     }
 
-    public void ajouterConfiguration(int idSerie, Configuration configuration) {
-        serieRepository.ajouterConfiguration(idSerie, configuration);
+    public List<Alerte> getAlertes(int id) {
+        return serieRepository.getAlertes(id);
     }
 
-    public void modifierConfiguration(int idSerie, int configId, Configuration configuration) {
-        serieRepository.modifierConfiguration(idSerie, configId, configuration);
+    public void ajouterConfiguration(int id, Configuration configuration) {
+        serieRepository.ajouterConfiguration(id, configuration);
     }
 
-    public List<Alerte> getAlertes(int idSerie) {
-        return serieRepository.getAlertes(idSerie);
+    public void modifierConfiguration(int configId, Configuration configuration) {
+        serieRepository.modifierConfiguration(configId, configuration);
     }
 
-    public void ajouterAlerte(int idSerie, Alerte alerte) {
-        serieRepository.ajouterAlerte(idSerie, alerte);
+    public void ajouterAlerte(int id, Alerte alerte) {
+        serieRepository.ajouterAlerte(id, alerte);
     }
 
-    public void modifierAlerte(int idSerie, Alerte alerte) {
-        serieRepository.modifierAlerte(idSerie, alerte);
+    public void modifierAlerte(int id, Alerte alerte) {
+        serieRepository.modifierAlerte(id, alerte);
     }
 
-    public void supprimerAlerte(int idSerie, String timestamp) {
-        serieRepository.supprimerAlerte(idSerie, timestamp);
+    public void supprimerAlerte(int id, String timestamp) {
+        serieRepository.supprimerAlerte(id, timestamp);
     }
+
 }

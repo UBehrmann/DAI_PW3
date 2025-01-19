@@ -13,7 +13,7 @@ public class GroupeUtilisateursController {
     public static void registerRoutes(Javalin app) {
         app.get("/api/groupes", GroupeUtilisateursController::getGroupes);
         app.get("/api/groupes/{nom}", GroupeUtilisateursController::getGroupeByNom);
-        app.get("/api/groupes/{nomUtilisateur}", GroupeUtilisateursController::getGroupesByUtilisateur);
+        app.get("/api/groupes/utilisateur/{nomUtilisateur}", GroupeUtilisateursController::getGroupesByUtilisateur);
         app.post("/api/groupes", GroupeUtilisateursController::ajouterGroupe);
         app.put("/api/groupes/{nom}", GroupeUtilisateursController::mettreAJourGroupe);
         app.delete("/api/groupes/{nom}", GroupeUtilisateursController::supprimerGroupe);

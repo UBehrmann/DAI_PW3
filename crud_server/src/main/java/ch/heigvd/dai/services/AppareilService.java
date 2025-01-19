@@ -9,6 +9,14 @@ import java.util.List;
 public class AppareilService {
     private final AppareilRepository appareilRepository = new AppareilRepository();
 
+    public List<Appareil> getAllAppareils() {
+        return appareilRepository.getAllAppareils();
+    }
+
+    public List<Appareil> getAppareilsForUser(String username) {
+        return appareilRepository.getAppareilsForUser(username);
+    }
+
     public Appareil getAppareilByIp(String ip) {
         return appareilRepository.getAppareilByIp(ip);
     }
