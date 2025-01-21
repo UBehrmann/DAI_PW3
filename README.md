@@ -1,3 +1,5 @@
+<div align="justify" style="margin-right:25px;margin-left:25px">
+
 # DAI_PW3 <!-- omit in toc -->
 
 ## Authors <!-- omit in toc -->
@@ -8,29 +10,47 @@
 # Table of contents
 
 - [Table of contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Folder structure](#folder-structure)
 - [How to run the service](#how-to-run-the-service)
   - [1 Build from source](#1-build-from-source)
   - [2 Build and run docker image](#2-build-and-run-docker-image)
-  - [3 Use the docker image from github packages](#3-use-the-docker-image-from-github-packages)
+  - [3 Use the docker image from GitHub packages](#3-use-the-docker-image-from-github-packages)
 - [How to connect to the database with docker](#how-to-connect-to-the-database-with-docker)
+- [How to create an Azure virtual machine](#how-to-create-an-azure-virtual-machine)
 - [How to connect to the Azure virtual machine](#how-to-connect-to-the-azure-virtual-machine)
   - [How to add the teaching staff's public key to the virtual machine](#how-to-add-the-teaching-staffs-public-key-to-the-virtual-machine)
 - [API Documentation](#api-documentation)
 - [Examples of API calls](#examples-of-api-calls)
-- [how to install and configure the virtual machine](#how-to-install-and-configure-the-virtual-machine)
+  - [Other calls](#other-calls)
 - [how to configure the DNS zone](#how-to-configure-the-dns-zone)
-- [how to deploy, run and access the web applications with Docker Compose](#how-to-deploy-run-and-access-the-web-applications-with-docker-compose)
-    - [Upload crud\_server docker image to github container registry](#upload-crud_server-docker-image-to-github-container-registry)
-    - [Upload db\_crud\_server docker image to github container registry](#upload-db_crud_server-docker-image-to-github-container-registry)
-    - [Update dockers sur Azure](#update-dockers-sur-azure)
-    - [MAJ docker-compose.yml sur Azure](#maj-docker-composeyml-sur-azure)
+- [Caching](#caching)
+- [Encryption](#encryption)
+
+# Introduction
+
+This is the project for the third practical work of the Distributed Application Infrastructure course at HEIG-VD. The goal of this project is to create a CRUD server. We combined the CRUD server with a PostgreSQL database, which we did for BDR. We also created a small website to interact with the data base through the CRUD server. 
+
+You can access the website at the following URL: [Site web](https://heig.urs-behrmann.ch/)
+
+You can access the Traefik dashboard at the following URL: [Traefik dashboard](https://dashboard.ub-dai.duckdns.org/dashboard/#/)
+
+# Folder structure
+
+The Java project has 5 main packages:
+
+- 'config': Contains the configuration classes for the database.
+- 'controller': Contains the controller classes for the API.
+- 'model': Contains the model classes for the database.
+- 'repository': Contains the repository classes for the database.
+- 'service': Contains the service classes for the API.
 
 # How to run the service
 
 There are 3 ways to run this service:
 - Build from source with your IDE of choice
 - Clone the repo and run the docker file
-- Use the docker image from github packages
+- Use the docker image from GitHub packages
 
 ___
 
@@ -108,6 +128,19 @@ docker push ghcr.io/ubehrmann/crud_server:latest
 
 (Update the tag with your GitHub username and the name of the repository)
 
+
+### Upload the docker-compose.yml file to the Azure virtual machine <!-- omit in toc -->
+
+To update the docker-compose.yml file on the Azure virtual machine, you can use the following command:
+
+```bash
+
+scp -i ~/.ssh/azure ~/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~
+
+```
+
+Update the path to the docker-compose.yml file with the correct path on your machine and also the ip address of the Azure virtual machine.
+
 ### Run the Service with Docker Compose  <!-- omit in toc -->
 
 Pull the necessary images:
@@ -142,7 +175,7 @@ docker-compose down
 
 ___
 
-## 3 Use the docker image from github packages
+## 3 Use the docker image from GitHub packages
 
 1. Pull the Docker image from GitHub Packages:
 
@@ -167,6 +200,12 @@ docker exec -it postgres-db psql -U user -d mydb
 ```
 
 After running this command, you will be connected to the database and can run SQL queries.
+
+___
+
+# How to create an Azure virtual machine
+
+To create an Azure virtual machine, follow the steps in the following document: [Azure virtual machine](installVM.md)
 
 ___
 
@@ -201,24 +240,12 @@ ___
 
 There are a lot of endpoints in this API. We categorized with the access point.
 
-## /api/utilisateurs <!-- omit in toc -->
-
-
-
-## /api/groupes <!-- omit in toc -->
-
-
-
-## /api/groupes/utilisateurs <!-- omit in toc -->
-
-
-
-## /api/ <!-- omit in toc -->
-
 
 ___
 
 # Examples of API calls
+
+Here are some examples of API calls that can be made to the server.
 
 ## Get all users <!-- omit in toc -->
 
@@ -226,27 +253,56 @@ ___
 curl -X GET https://ub-dai.duckdns.org/api/utilisateurs
 ```
 
-## Add a user <!-- omit in toc -->
+Response:
 
-```bash
-
+```json
+[
+  {
+    "nom":"Urs",
+    "prenom":"Behrmann",
+    "rue":"Route de Montheron",
+    "noRue":"12",
+    "npa":"1800",
+    "lieu":"Vevey",
+    "dateNaissance":null,
+    "nomUtilisateur":"UBehrmann",
+    "motDePasse":"C~+ftB4SWFEj6",
+    "statutCompte":"ACTIF",
+    "derniereConnexionDate":null,
+    "derniereConnexionHeure":null
+  }
+]
 ```
 
-## Remove a user <!-- omit in toc -->
+## Other calls
+
+You can look at our API documentation to see all the endpoints and the calls you can make.
+
+To make a get request to the API, you can use the following command:
 
 ```bash
-
+curl -X GET https://ub-dai.duckdns.org/api/endpoint
 ```
 
-## Update a user <!-- omit in toc -->
+To make a post request to the API, you can use the following command:
 
 ```bash
-
+curl -X POST https://ub-dai.duckdns.org/api/endpoint -d '{"key": "value"}'
 ```
-___
 
-# how to install and configure the virtual machine
+To make a put request to the API, you can use the following command:
 
+```bash
+curl -X PUT https://ub-dai.duckdns.org/api/endpoint -d '{"key": "value"}'
+```
+
+To make a delete request to the API, you can use the following command:
+
+```bash
+curl -X DELETE https://ub-dai.duckdns.org/api/endpoint
+```
+
+All the endpoints return a JSON object or an string with the result of the request. Also the status code is returned with the request.
 
 ___
 
@@ -256,7 +312,7 @@ We configured the was registered with the domain name ub-dai.duckdns.org at Duck
 
 The DNS zone is configured with the following records:
 
-![dns zone](imgs/dns.png)
+![DNS zone](imgs/dns.png)
 
 https://dashboard.ub-dai.duckdns.org/
 
@@ -265,31 +321,18 @@ Username: admin
 Password: mypassword
 ___
 
-# how to deploy, run and access the web applications with Docker Compose
+# Caching
 
-### Upload crud_server docker image to github container registry
+We had some problems implementing the caching as it was shown in the course. That's why we implemented a variant. We used a HashMap to store the data and a Timer to see if the data is still valid. If the data is still valid, we return the data from the cache. If the data is not valid anymore, we remove the data from the cache and return the data from the database.
 
-docker build . -t crud_server
-docker tag crud_server ghcr.io/ubehrmann/crud_server:latest
-docker push ghcr.io/ubehrmann/crud_server:latest
+We made also all classes static, this way concurrent access to the cache is not a problem.
 
-### Upload db_crud_server docker image to github container registry
+We put them on most of the endpoints, but we decided not to put them on the datapoints (PointDeDonnees) which are used to get the data from the database. We did this because we wanted to have the most recent data from the database and also because the caching would the memory used would be too high.
 
-docker build . -t db_crud_server 
-docker tag db_crud_server ghcr.io/ubehrmann/db_crud_server:latest
-docker push ghcr.io/ubehrmann/db_crud_server:latest
+___
 
-### Update dockers sur Azure
+# Encryption
 
-docker-compose down
-docker-compose pull
-docker-compose up --build
+We used let's encrypt to encrypt the website. We get the certification through traefik's tlschallenge.
 
-### MAJ docker-compose.yml sur Azure
-
-scp -i ~/.ssh/azure ~/DAI/DAI_PW3/Azure/docker-compose.yml ubuntu@172.201.218.98:~
-
-ip: 172.201.218.98
-
-curl http://ub-dai.duckdns.org/api/utilisateurs
-curl https://ub-dai.duckdns.org/api/utilisateurs
+</div>
