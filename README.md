@@ -1,3 +1,5 @@
+<div align="justify" style="margin-right:25px;margin-left:25px">
+
 # DAI_PW3 <!-- omit in toc -->
 
 ## Authors <!-- omit in toc -->
@@ -8,22 +10,44 @@
 # Table of contents
 
 - [Table of contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Folder structure](#folder-structure)
 - [How to run the service](#how-to-run-the-service)
   - [1 Build from source](#1-build-from-source)
   - [2 Build and run docker image](#2-build-and-run-docker-image)
   - [3 Use the docker image from github packages](#3-use-the-docker-image-from-github-packages)
 - [How to connect to the database with docker](#how-to-connect-to-the-database-with-docker)
+- [How to create an Azure virtual machine](#how-to-create-an-azure-virtual-machine)
 - [How to connect to the Azure virtual machine](#how-to-connect-to-the-azure-virtual-machine)
   - [How to add the teaching staff's public key to the virtual machine](#how-to-add-the-teaching-staffs-public-key-to-the-virtual-machine)
 - [API Documentation](#api-documentation)
 - [Examples of API calls](#examples-of-api-calls)
 - [how to install and configure the virtual machine](#how-to-install-and-configure-the-virtual-machine)
 - [how to configure the DNS zone](#how-to-configure-the-dns-zone)
+- [Caching](#caching)
 - [how to deploy, run and access the web applications with Docker Compose](#how-to-deploy-run-and-access-the-web-applications-with-docker-compose)
     - [Upload crud\_server docker image to github container registry](#upload-crud_server-docker-image-to-github-container-registry)
     - [Upload db\_crud\_server docker image to github container registry](#upload-db_crud_server-docker-image-to-github-container-registry)
     - [Update dockers sur Azure](#update-dockers-sur-azure)
     - [MAJ docker-compose.yml sur Azure](#maj-docker-composeyml-sur-azure)
+
+# Introduction
+
+This is the project for the third practical work of the Distributed Application Infrastructure course at HEIG-VD. The goal of this project is to create a CRUD server. We combined the CRUD server with a PostgreSQL database, which we did for BDR. We also created a small website to interact with the data base through the CRUD server. 
+
+You can access the website at the following URL: [Site web](https://heig.urs-behrmann.ch/)
+
+You can access the traefik dashboard at the following URL: [Trafik dashboard](https://dashboard.ub-dai.duckdns.org/dashboard/#/)
+
+# Folder structure
+
+The Java project has 5 main packages:
+
+- 'config': Contains the configuration classes for the database.
+- 'controller': Contains the controller classes for the API.
+- 'model': Contains the model classes for the database.
+- 'repository': Contains the repository classes for the database.
+- 'service': Contains the service classes for the API.
 
 # How to run the service
 
@@ -170,6 +194,12 @@ After running this command, you will be connected to the database and can run SQ
 
 ___
 
+# How to create an Azure virtual machine
+
+To create an Azure virtual machine, follow the steps in the following document: [Azure virtual machine](installVM.md)
+
+___
+
 # How to connect to the Azure virtual machine
 
 In order to connect to the Azure virtual machine, you need to have the private key for the virtual machine. You can connect to the virtual machine with the following command:
@@ -200,20 +230,6 @@ ___
 # API Documentation
 
 There are a lot of endpoints in this API. We categorized with the access point.
-
-## /api/utilisateurs <!-- omit in toc -->
-
-
-
-## /api/groupes <!-- omit in toc -->
-
-
-
-## /api/groupes/utilisateurs <!-- omit in toc -->
-
-
-
-## /api/ <!-- omit in toc -->
 
 
 ___
@@ -265,6 +281,16 @@ Username: admin
 Password: mypassword
 ___
 
+# Caching
+
+We had some problems implementing the caching as it was shown in the course. That's why we implemented a variant. We used a HashMap to store the data and a Timer to see if the data is still valid. If the data is still valid, we return the data from the cache. If the data is not valid anymore, we remove the data from the cache and return the data from the database.
+
+We made also all classes static, this way concurrent access to the cache is not a problem.
+
+We put them on most of the endpoints, but we decided not to put them on the datapoints (PointDeDonnees) which are used to get the data from the database. We did this because we wanted to have the most recent data from the database and also because the caching would the memory used would be too high.
+
+___
+
 # how to deploy, run and access the web applications with Docker Compose
 
 ### Upload crud_server docker image to github container registry
@@ -293,3 +319,5 @@ ip: 172.201.218.98
 
 curl http://ub-dai.duckdns.org/api/utilisateurs
 curl https://ub-dai.duckdns.org/api/utilisateurs
+
+</div>
