@@ -36,7 +36,7 @@ After connection to the Azure virtual machine, you can update the dockers with t
 
 docker-compose down
 docker-compose pull
-docker-compose up --build
+docker-compose up -d --build
 
 ```
 
@@ -51,3 +51,5 @@ scp -i ~/.ssh/azure ~/DAI/DAI_PW3/docker-compose.yml ubuntu@172.201.218.98:~
 ```
 
 </div>
+
+curl -X GET https://localhost:7000/api/utilisateurs

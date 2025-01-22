@@ -240,7 +240,7 @@ ___
 
 There are a lot of endpoints in this API. We categorized with the access point.
 
-
+[API Documentation](api_doc.md)
 ___
 
 # Examples of API calls
